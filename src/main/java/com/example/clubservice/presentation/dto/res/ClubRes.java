@@ -1,4 +1,4 @@
 package com.example.clubservice.presentation.dto.res;
 
-public class ClubResponse {
+public class ClubRes {
 }
