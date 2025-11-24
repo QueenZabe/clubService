@@ -1,5 +1,5 @@
 package com.example.clubservice.domain.enums;
 
 public enum ClubCategory {
-    SPORTS, MUSIC, IT, ETC
+    IT, SPORTS, MUSIC, ETC
 }
