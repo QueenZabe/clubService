@@ -3,8 +3,9 @@ package com.example.clubservice.service;
 import com.example.clubservice.domain.Club;
 import com.example.clubservice.domain.enums.ClubCategory;
 import com.example.clubservice.domain.repo.ClubRepo;
+import com.example.clubservice.etc.exception.CustomException;
+import com.example.clubservice.etc.exception.error.ErrorCode;
 import com.example.clubservice.presentation.dto.res.ClubListRes;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +19,14 @@ public class ClubServiceImpl implements ClubService{
 
     @Override
     public List<ClubListRes> findAllByCategory(ClubCategory category) {
+        if (category == null) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
         List<Club> clubs = clubRepo.findAllByCategory(category);
 
         if (clubs.isEmpty()) {
-            throw new EntityNotFoundException(category + " 카테고리에 해당하는 동아리가 없습니다.");
+            throw new CustomException(ErrorCode.NOT_FOUND);
         }
 
         return clubs.stream()
@@ -31,8 +36,12 @@ public class ClubServiceImpl implements ClubService{
 
     @Override
     public void deleteClub(Long id) {
+        if (id == null || id <= 0) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
         if (!clubRepo.existsById(id)) {
-            throw new EntityNotFoundException(id + "번에 해당하는 동아리를 찾을 수 없습니다.");
+            throw new CustomException(ErrorCode.NOT_FOUND);
         }
         clubRepo.deleteById(id);
     }
