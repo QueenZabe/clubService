@@ -2,6 +2,7 @@ package com.example.clubservice.service;
 
 import com.example.clubservice.dto.request.ClubCreateRequest;
 import com.example.clubservice.dto.request.ClubUpdateRequest;
+import com.example.clubservice.dto.response.ClubResponse;
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
@@ -95,25 +96,30 @@ public class ClubServiceImpl implements ClubService{
     }
 
     public void writeClubExcel(OutputStream os) throws IOException {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Clubs");
+        Workbook workbook = new XSSFWorkbook();                         // 새 엑셀 워크북 생성
+        Sheet sheet = workbook.createSheet("Clubs");                     // 시트 생성
 
-        Row header = sheet.createRow(0);
+        // 헤더 작성
+        Row header = sheet.createRow(0);                                 // 헤더 생성
         header.createCell(0).setCellValue("동아리명");
         header.createCell(1).setCellValue("설명");
         header.createCell(2).setCellValue("카테고리");
 
-        List<Club> clubs = clubRepository.findAll();
+        // DTO 리스트 가져오기
+        List<ClubResponse> clubs = clubRepository.findAll()              // 엔티티 조회
+                .stream()
+                .map(ClubResponse::from)                                 // DTO로 변환
+                .toList();
 
         int rowIdx = 1;
-        for (Club club : clubs) {
-            Row row = sheet.createRow(rowIdx++);
+        for (ClubResponse club : clubs) {
+            Row row = sheet.createRow(rowIdx++);                         // 새로운 행 생성
             row.createCell(0).setCellValue(club.getName());
             row.createCell(1).setCellValue(club.getDescription());
             row.createCell(2).setCellValue(club.getCategory().name());
         }
 
-        workbook.write(os);
-        workbook.close();
+        workbook.write(os);                                              // 엑셀 파일로 출력
+        workbook.close();                                                // 리소스 정리
     }
 }
