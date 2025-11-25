@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
     boolean existsByName(String name);
-    List<Club> findAllOrderByCreatedAtDesc();
+    List<Club> findAllByOrderByCreatedAtDesc();
     List<Club> findAllByCategory(ClubCategory category);
 }

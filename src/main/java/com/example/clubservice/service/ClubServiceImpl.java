@@ -11,6 +11,7 @@ import com.example.clubservice.dto.response.ClubListResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ public class ClubServiceImpl implements ClubService{
                 .name(request.getName())
                 .description(request.getDescription())
                 .category(request.getCategory())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         clubRepository.save(club);
@@ -37,7 +39,7 @@ public class ClubServiceImpl implements ClubService{
 
     @Override
     public List<ClubListResponse> getAllClubs() {
-        return clubRepository.findAllOrderByCreatedAtDesc()
+        return clubRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(ClubListResponse::from)
                 .collect(Collectors.toList());

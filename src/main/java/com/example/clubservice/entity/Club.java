@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name="tb_club")
 @Getter
@@ -23,6 +25,9 @@ public class Club {
 
     @Column
     private String description;
+
+    @Column
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     private ClubCategory category;
