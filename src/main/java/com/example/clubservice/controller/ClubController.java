@@ -1,4 +1,4 @@
-package com.example.clubservice.presentation;
+package com.example.clubservice.controller;
 
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.response.Response;
