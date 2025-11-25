@@ -9,8 +9,14 @@ import com.example.clubservice.exception.CustomException;
 import com.example.clubservice.exception.error.ErrorCode;
 import com.example.clubservice.dto.response.ClubListResponse;
 import lombok.AllArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,5 +92,28 @@ public class ClubServiceImpl implements ClubService{
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
         clubRepository.deleteById(id);
+    }
+
+    public void writeClubExcel(OutputStream os) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Clubs");
+
+        Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("동아리명");
+        header.createCell(1).setCellValue("설명");
+        header.createCell(2).setCellValue("카테고리");
+
+        List<Club> clubs = clubRepository.findAll();
+
+        int rowIdx = 1;
+        for (Club club : clubs) {
+            Row row = sheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(club.getName());
+            row.createCell(1).setCellValue(club.getDescription());
+            row.createCell(2).setCellValue(club.getCategory().name());
+        }
+
+        workbook.write(os);
+        workbook.close();
     }
 }

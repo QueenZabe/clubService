@@ -41,6 +41,10 @@ dependencies {
 
     //swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
+
+    // Apache POI (엑셀 파일 생성)
+    implementation 'org.apache.poi:poi:5.2.5'              // HSSF (xls)
+    implementation 'org.apache.poi:poi-ooxml:5.2.5'        // XSSF (xlsx)
 }
 
 tasks.named('test') {
