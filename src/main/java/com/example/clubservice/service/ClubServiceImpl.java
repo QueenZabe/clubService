@@ -8,6 +8,7 @@ import com.example.clubservice.repo.ClubRepo;
 import com.example.clubservice.exception.CustomException;
 import com.example.clubservice.exception.error.ErrorCode;
 import com.example.clubservice.dto.res.ClubListRes;
+import com.example.clubservice.response.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,19 +38,7 @@ public class ClubServiceImpl implements ClubService{
     }
 
     @Override
-    public void deleteClub(Long id) {
-        if (id == null || id <= 0) {
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-        }
-
-        if (!clubRepo.existsById(id)) {
-            throw new CustomException(ErrorCode.NOT_FOUND);
-        }
-        clubRepo.deleteById(id);
-    }
-
-    @Override
-    public ClubRes updateClub(Long id, ClubUpdateReq updateReq) {
+    public void updateClub(Long id, ClubUpdateReq updateReq) {
         if (id == null || id <= 0 || updateReq == null) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
@@ -60,7 +49,17 @@ public class ClubServiceImpl implements ClubService{
         club.update(updateReq);
 
         clubRepo.save(club);
+    }
 
-        return ClubRes.from(club); // DTO로 반환
+    @Override
+    public void deleteClub(Long id) {
+        if (id == null || id <= 0) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
+        if (!clubRepo.existsById(id)) {
+            throw new CustomException(ErrorCode.NOT_FOUND);
+        }
+        clubRepo.deleteById(id);
     }
 }

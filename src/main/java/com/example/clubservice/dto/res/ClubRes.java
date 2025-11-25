@@ -13,7 +13,6 @@ public class ClubRes {
     private String description;
     private ClubCategory category;
 
-    // 엔티티를 DTO로 변환
     public static ClubRes from(Club club) {
         return new ClubRes(
                 club.getId(),

@@ -10,7 +10,7 @@ import java.util.List;
 public interface ClubService {
     List<ClubListRes> findAllByCategory(ClubCategory category);
 
-    void deleteClub(Long id);
+    void updateClub(Long id, ClubUpdateReq updateReq);
 
-    ClubRes updateClub(Long id, ClubUpdateReq updateReq);
+    void deleteClub(Long id);
 }
