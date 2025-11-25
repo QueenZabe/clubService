@@ -1,10 +1,10 @@
 package com.example.clubservice.controller;
 
-import com.example.clubservice.dto.req.ClubUpdateReq;
-import com.example.clubservice.dto.res.ClubRes;
+import com.example.clubservice.dto.request.ClubCreateRequest;
+import com.example.clubservice.dto.request.ClubUpdateRequest;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.response.Response;
-import com.example.clubservice.dto.res.ClubListRes;
+import com.example.clubservice.dto.response.ClubListResponse;
 import com.example.clubservice.service.ClubService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +18,21 @@ public class ClubController {
 
     private final ClubService clubService;
 
+    @PostMapping
+    public Response<String> createClub(@RequestBody ClubCreateRequest request) {
+        clubService.createClub(request);
+        return Response.created("정상적으로 생성되었습니다.");
+    }
+
+    @GetMapping
+    public Response<List<ClubListResponse>> getAllClubs() {
+        List<ClubListResponse> response = clubService.getAllClubs();
+        return Response.ok(response);
+    }
+
     @GetMapping("/{category}")
-    public Response<List<ClubListRes>> getClubsByCategory(@PathVariable ClubCategory category) {
-        List<ClubListRes> clubs = clubService.findAllByCategory(category);
+    public Response<List<ClubListResponse>> getClubsByCategory(@PathVariable ClubCategory category) {
+        List<ClubListResponse> clubs = clubService.findAllByCategory(category);
 
         return Response.ok(clubs);
     }
@@ -28,9 +40,9 @@ public class ClubController {
     @PutMapping("/{id}")
     public Response<Void> updateClub(
             @PathVariable Long id,
-            @RequestBody ClubUpdateReq updateReq
+            @RequestBody ClubUpdateRequest updateRequest
     ) {
-        clubService.updateClub(id, updateReq);
+        clubService.updateClub(id, updateRequest);
         return Response.ok("성공적으로 업데이트 되었습니다.");
     }
 

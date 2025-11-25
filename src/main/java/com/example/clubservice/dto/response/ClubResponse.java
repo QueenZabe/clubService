@@ -1,4 +1,4 @@
-package com.example.clubservice.dto.res;
+package com.example.clubservice.dto.response;
 
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
@@ -7,15 +7,17 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ClubListRes {
+public class ClubResponse {
     private Long id;
     private String name;
+    private String description;
     private ClubCategory category;
 
-    public static ClubListRes from(Club club) {
-        return new ClubListRes(
+    public static ClubResponse from(Club club) {
+        return new ClubResponse(
                 club.getId(),
                 club.getName(),
+                club.getDescription(),
                 club.getCategory()
         );
     }

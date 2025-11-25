@@ -1,13 +1,17 @@
 package com.example.clubservice.entity;
 
-import com.example.clubservice.dto.req.ClubUpdateReq;
+import com.example.clubservice.dto.request.ClubUpdateRequest;
 import com.example.clubservice.enums.ClubCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name="tb_club")
 @Getter
+@SuperBuilder
+@NoArgsConstructor
 public class Club {
 
     @Id
@@ -23,9 +27,9 @@ public class Club {
     @Enumerated(EnumType.STRING)
     private ClubCategory category;
 
-    public void update(ClubUpdateReq req) {
-        this.name = req.getName();
-        this.description = req.getDescription();
-        this.category = req.getCategory();
+    public void update(ClubUpdateRequest request) {
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.category = request.getCategory();
     }
 }

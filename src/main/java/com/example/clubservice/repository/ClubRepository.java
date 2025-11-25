@@ -1,4 +1,4 @@
-package com.example.clubservice.repo;
+package com.example.clubservice.repository;
 
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ClubRepo extends JpaRepository<Club, Long> {
+public interface ClubRepository extends JpaRepository<Club, Long> {
+    boolean existsByName(String name);
+    List<Club> findAllOrderByCreatedAtDesc();
     List<Club> findAllByCategory(ClubCategory category);
 }

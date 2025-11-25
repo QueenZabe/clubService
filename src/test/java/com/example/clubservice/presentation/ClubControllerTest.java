@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.clubservice.entity.Club;
-import com.example.clubservice.repo.ClubRepo;
+import com.example.clubservice.repository.ClubRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ class ClubControllerTest {
     private WebApplicationContext context;
 
     @Autowired
-    private ClubRepo clubRepo;
+    private ClubRepository clubRepo;
 
     @BeforeEach
     public void mockMvcSetUp() {

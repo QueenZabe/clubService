@@ -2,9 +2,9 @@ package com.example.clubservice.service;
 
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
-import com.example.clubservice.repo.ClubRepo;
+import com.example.clubservice.repository.ClubRepository;
 import com.example.clubservice.exception.CustomException;
-import com.example.clubservice.dto.res.ClubListRes;
+import com.example.clubservice.dto.response.ClubListResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ class ClubServiceTest {
     private ClubService clubService;
 
     @Autowired
-    private ClubRepo clubRepo;
+    private ClubRepository clubRepo;
 
     @DisplayName("IT 카테고리로 동아리 목록을 조회하면 4개의 동아리가 반환된다")
     @Test
@@ -31,13 +31,13 @@ class ClubServiceTest {
         ClubCategory category = ClubCategory.IT;
 
         // when
-        List<ClubListRes> result = clubService.findAllByCategory(category);
+        List<ClubListResponse> result = clubService.findAllByCategory(category);
 
         // then
         assertThat(result)
                 .isNotEmpty()
                 .hasSize(4)
-                .extracting(ClubListRes::getName).contains("BIND");
+                .extracting(ClubListResponse::getName).contains("BIND");
 
     }
 
