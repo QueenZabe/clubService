@@ -1,4 +1,4 @@
-package com.example.clubservice.etc.exception;
+package com.example.clubservice.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

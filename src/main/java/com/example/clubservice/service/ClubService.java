@@ -1,8 +1,7 @@
 package com.example.clubservice.service;
 
-import com.example.clubservice.domain.enums.ClubCategory;
-import com.example.clubservice.presentation.dto.res.ClubListRes;
-import org.springframework.http.ResponseEntity;
+import com.example.clubservice.enums.ClubCategory;
+import com.example.clubservice.dto.res.ClubListRes;
 
 import java.util.List;
 

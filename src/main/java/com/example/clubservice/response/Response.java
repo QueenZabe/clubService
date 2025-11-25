@@ -1,4 +1,4 @@
-package com.example.clubservice.etc.response;
+package com.example.clubservice.response;
 
 import lombok.Builder;
 import lombok.Getter;

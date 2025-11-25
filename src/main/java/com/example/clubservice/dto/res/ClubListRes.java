@@ -1,7 +1,7 @@
-package com.example.clubservice.presentation.dto.res;
+package com.example.clubservice.dto.res;
 
-import com.example.clubservice.domain.Club;
-import com.example.clubservice.domain.enums.ClubCategory;
+import com.example.clubservice.entity.Club;
+import com.example.clubservice.enums.ClubCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

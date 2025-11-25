@@ -1,8 +1,8 @@
 package com.example.clubservice.presentation;
 
-import com.example.clubservice.domain.enums.ClubCategory;
-import com.example.clubservice.etc.response.Response;
-import com.example.clubservice.presentation.dto.res.ClubListRes;
+import com.example.clubservice.enums.ClubCategory;
+import com.example.clubservice.response.Response;
+import com.example.clubservice.dto.res.ClubListRes;
 import com.example.clubservice.service.ClubService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

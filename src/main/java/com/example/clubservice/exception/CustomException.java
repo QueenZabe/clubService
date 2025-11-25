@@ -1,6 +1,6 @@
-package com.example.clubservice.etc.exception;
+package com.example.clubservice.exception;
 
-import com.example.clubservice.etc.exception.error.CustomErrorCode;
+import com.example.clubservice.exception.error.CustomErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

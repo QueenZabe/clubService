@@ -1,10 +1,10 @@
 package com.example.clubservice.service;
 
-import com.example.clubservice.domain.Club;
-import com.example.clubservice.domain.enums.ClubCategory;
-import com.example.clubservice.domain.repo.ClubRepo;
-import com.example.clubservice.etc.exception.CustomException;
-import com.example.clubservice.presentation.dto.res.ClubListRes;
+import com.example.clubservice.entity.Club;
+import com.example.clubservice.enums.ClubCategory;
+import com.example.clubservice.repo.ClubRepo;
+import com.example.clubservice.exception.CustomException;
+import com.example.clubservice.dto.res.ClubListRes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

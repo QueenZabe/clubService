@@ -1,6 +1,6 @@
-package com.example.clubservice.domain;
+package com.example.clubservice.entity;
 
-import com.example.clubservice.domain.enums.ClubCategory;
+import com.example.clubservice.enums.ClubCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 

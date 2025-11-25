@@ -1,4 +1,4 @@
-package com.example.clubservice.etc.exception;
+package com.example.clubservice.exception;
 
 import lombok.Builder;
 import lombok.Getter;

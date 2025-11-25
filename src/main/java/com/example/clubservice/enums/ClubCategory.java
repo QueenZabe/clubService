@@ -1,4 +1,4 @@
-package com.example.clubservice.domain.enums;
+package com.example.clubservice.enums;
 
 public enum ClubCategory {
     IT, SPORTS, MUSIC, ETC

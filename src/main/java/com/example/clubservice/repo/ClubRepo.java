@@ -1,7 +1,7 @@
-package com.example.clubservice.domain.repo;
+package com.example.clubservice.repo;
 
-import com.example.clubservice.domain.Club;
-import com.example.clubservice.domain.enums.ClubCategory;
+import com.example.clubservice.entity.Club;
+import com.example.clubservice.enums.ClubCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

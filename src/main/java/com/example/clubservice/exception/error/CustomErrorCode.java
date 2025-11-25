@@ -1,4 +1,4 @@
-package com.example.clubservice.etc.exception.error;
+package com.example.clubservice.exception.error;
 
 import org.springframework.http.HttpStatus;
 
