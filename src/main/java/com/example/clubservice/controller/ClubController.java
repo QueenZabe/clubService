@@ -1,5 +1,7 @@
 package com.example.clubservice.controller;
 
+import com.example.clubservice.dto.req.ClubUpdateReq;
+import com.example.clubservice.dto.res.ClubRes;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.response.Response;
 import com.example.clubservice.dto.res.ClubListRes;
@@ -28,5 +30,14 @@ public class ClubController {
         clubService.deleteClub(id);
 
         return Response.ok("성공적으로 삭제되었습니다.");
+    }
+
+    @PutMapping("/{id}")
+    public Response<ClubRes> updateClub(
+            @PathVariable Long id,
+            @RequestBody ClubUpdateReq updateReq
+    ) {
+        ClubRes updatedClub = clubService.updateClub(id, updateReq);
+        return Response.ok(updatedClub);
     }
 }

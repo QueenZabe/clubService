@@ -1,5 +1,7 @@
 package com.example.clubservice.service;
 
+import com.example.clubservice.dto.req.ClubUpdateReq;
+import com.example.clubservice.dto.res.ClubRes;
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repo.ClubRepo;
@@ -44,5 +46,21 @@ public class ClubServiceImpl implements ClubService{
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
         clubRepo.deleteById(id);
+    }
+
+    @Override
+    public ClubRes updateClub(Long id, ClubUpdateReq updateReq) {
+        if (id == null || id <= 0 || updateReq == null) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
+        Club club = clubRepo.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        club.update(updateReq);
+
+        clubRepo.save(club);
+
+        return ClubRes.from(club); // DTO로 반환
     }
 }
