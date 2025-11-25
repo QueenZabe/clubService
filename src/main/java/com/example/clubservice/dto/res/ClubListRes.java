@@ -10,13 +10,15 @@ import lombok.Getter;
 public class ClubListRes {
     private Long id;
     private String name;
-    private ClubCategory category;
+    private String category;
+    private String description;
 
     public static ClubListRes from(Club club) {
         return new ClubListRes(
                 club.getId(),
                 club.getName(),
-                club.getCategory()
+                club.getCategory().name(),
+                club.getDescription()
         );
     }
 }
