@@ -46,7 +46,7 @@ class ClubControllerTest {
 
     @DisplayName("GET, /clubs/IT 요청 시 200 OK와 IT 카테고리 동아리 목록이 반환된다")
     @Test
-    public void getClubsByCategory_IT_Success() throws Exception {
+    public void getClubsByCategory_success() throws Exception {
         // given
         final String url = "/clubs/IT";
 
@@ -55,12 +55,10 @@ class ClubControllerTest {
 
         // then
         result
-                .andExpect(
-                        status().isOk()
-                )
-                .andExpect(
-                        jsonPath("$").isArray()
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.data").isArray());
     }
 
     @DisplayName("DELETE, /clubs/{id} 요청 시 200 OK와 성공 메시지가 반환된다")
@@ -76,11 +74,38 @@ class ClubControllerTest {
 
         // then
         result
-                .andExpect(
-                        status().isOk()
-                )
-                .andExpect(
-                        content().string("성공적으로 삭제되었습니다.")
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("성공적으로 삭제되었습니다."));
+    }
+
+    @DisplayName("GET, /clubs/INVALID 요청 시 400 Bad Request가 반환된다")
+    @Test
+    public void getClubsByCategory_InvalidCategory_Fail() throws Exception {
+        // given
+        final String url = "/clubs/INVALID_CATEGORY";
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("DELETE, /clubs/{id} 요청 시 존재하지 않는 ID면 404 Not Found가 반환된다")
+    @Test
+    public void deleteClub_NotFound() throws Exception {
+        // given
+        Long nonExistentId = 99999L;
+        final String url = "/clubs/" + nonExistentId;
+
+        // when
+        final ResultActions result = mockMvc.perform(delete(url));
+
+        // then
+        result
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").exists());
     }
 }

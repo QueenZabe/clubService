@@ -3,6 +3,7 @@ package com.example.clubservice.service;
 import com.example.clubservice.domain.Club;
 import com.example.clubservice.domain.enums.ClubCategory;
 import com.example.clubservice.domain.repo.ClubRepo;
+import com.example.clubservice.etc.exception.CustomException;
 import com.example.clubservice.presentation.dto.res.ClubListRes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,5 +53,66 @@ class ClubServiceTest {
 
         // then
         assertThat(clubRepo.existsById(clubId)).isFalse();
+    }
+
+    @DisplayName("null 카테고리로 조회하면 BAD_REQUEST 예외가 발생한다")
+    @Test
+    void findAllByCategory_NullCategory_ThrowsException() {
+        // given
+        ClubCategory category = null;
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            clubService.findAllByCategory(category);
+        });
+    }
+
+    @DisplayName("해당 카테고리에 동아리가 없으면 NOT_FOUND 예외가 발생한다")
+    @Test
+    void findAllByCategory_NoClubs_ThrowsException() {
+        // given
+        clubRepo.deleteAll(); // 모든 동아리 삭제
+        ClubCategory category = ClubCategory.IT;
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            clubService.findAllByCategory(category);
+        });
+    }
+
+    @DisplayName("null ID로 삭제하면 BAD_REQUEST 예외가 발생한다")
+    @Test
+    void deleteClub_NullId_ThrowsException() {
+        // given
+        Long clubId = null;
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            clubService.deleteClub(clubId);
+        });
+    }
+
+    @DisplayName("0 이하의 ID로 삭제하면 BAD_REQUEST 예외가 발생한다")
+    @Test
+    void deleteClub_InvalidId_ThrowsException() {
+        // given
+        Long clubId = -1L;
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            clubService.deleteClub(clubId);
+        });
+    }
+
+    @DisplayName("존재하지 않는 ID로 삭제하면 NOT_FOUND 예외가 발생한다")
+    @Test
+    void deleteClub_NotExist_ThrowsException() {
+        // given
+        Long nonExistentId = 99999L;
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            clubService.deleteClub(nonExistentId);
+        });
     }
 }
