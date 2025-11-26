@@ -23,6 +23,8 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest
 @AutoConfigureMockMvc
 class ClubControllerTest {
+    @Autowired
+    private ClubService clubService;
 
     @Autowired
     protected MockMvc mockMvc;
