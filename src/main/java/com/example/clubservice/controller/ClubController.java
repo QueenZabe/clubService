@@ -45,15 +45,15 @@ public class ClubController {
 
     @GetMapping("/{id}")
     public Response<ClubResponse> getClub(@PathVariable Long id) {
-        ClubResponse club = clubService.getClubById(id);
-        return Response.ok(club);
+        ClubResponse response = clubService.getClubById(id);
+        return Response.ok(response);
     }
 
-    @GetMapping("/{category}")
+    @GetMapping("/category/{category}")
     public Response<List<ClubListResponse>> getClubsByCategory(@PathVariable ClubCategory category) {
-        List<ClubListResponse> clubs = clubService.findAllByCategory(category);
+        List<ClubListResponse> responses = clubService.findAllByCategory(category);
 
-        return Response.ok(clubs);
+        return Response.ok(responses);
     }
 
     @DeleteMapping("/{id}")
