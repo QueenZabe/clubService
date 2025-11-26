@@ -2,6 +2,7 @@ package com.example.clubservice.service;
 
 import com.example.clubservice.dto.request.ClubCreateRequest;
 import com.example.clubservice.dto.request.ClubUpdateRequest;
+import com.example.clubservice.dto.response.ClubResponse;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.dto.response.ClubListResponse;
 
@@ -17,4 +18,5 @@ public interface ClubService {
     void updateClub(Long id, ClubUpdateRequest updateReq);
     void deleteClub(Long id);
     void writeClubExcel(OutputStream os) throws IOException;
+    ClubResponse getClubById(Long id);
 }
