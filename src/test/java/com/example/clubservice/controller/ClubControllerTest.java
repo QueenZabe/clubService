@@ -1,12 +1,14 @@
 package com.example.clubservice.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.clubservice.dto.request.ClubUpdateRequest;
 import com.example.clubservice.entity.Club;
+import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,6 +34,8 @@ class ClubControllerTest {
 
     @Autowired
     private ClubRepository clubRepo;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     public void mockMvcSetUp() {
@@ -100,6 +104,57 @@ class ClubControllerTest {
 
         // when
         final ResultActions result = mockMvc.perform(delete(url));
+
+        // then
+        result
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @DisplayName("PUT, /club/{id} 요청 시 200 OK와 성공 메시지가 반환된다")
+    @Test
+    void updateClub_Success() throws Exception {
+        // given
+        Club club = clubRepo.findAll().get(0);
+        Long clubId = club.getId();
+
+        ClubUpdateRequest request = new ClubUpdateRequest(
+                "업데이트 동아리", "설명 변경", ClubCategory.SPORTS
+        );
+
+        String json = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                put("/club/" + clubId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        );
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("성공적으로 업데이트 되었습니다."));
+    }
+
+    @DisplayName("PUT, /club/{id} 요청 시 존재하지 않는 ID면 404 Not Found 반환")
+    @Test
+    void updateClub_NotFound() throws Exception {
+        // given
+        ClubUpdateRequest request = new ClubUpdateRequest(
+                "업데이트 동아리", "설명 변경", ClubCategory.SPORTS
+        );
+        String json = objectMapper.writeValueAsString(request);
+        Long nonExistentId = 99999L;
+
+        // when
+        ResultActions result = mockMvc.perform(
+                put("/club/" + nonExistentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        );
 
         // then
         result
