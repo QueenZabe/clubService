@@ -133,17 +133,19 @@ class ClubControllerTest {
     }
 
     @Test
-    @DisplayName("GET /clubs - 전체 동아리 조회 성공")
-    public void getClubsByCategory_Success() throws Exception {
+    @DisplayName("GET /club/list - 전체 동아리 조회 성공")
+    public void findAll_success() throws Exception {
         // given
-        final String url = "/clubs/IT";
+        final String url = "/club/list";
 
         // when
-        ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+        final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
 
         // then
-        result.andExpect(status().isOk())
+        result
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.data").isArray());
     }
 

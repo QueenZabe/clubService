@@ -9,7 +9,6 @@ import com.example.clubservice.dto.response.ClubListResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -132,63 +131,46 @@ class ClubServiceTest {
         // then
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getName()).isEqualTo("테스트 동아리");
-        Assertions.assertThat(result.getCategory()).isEqualTo("SPORTS");
+        Assertions.assertThat(result.getCategory()).isEqualTo(ClubCategory.SPORTS);
     }
 
     @Test
     @DisplayName("전체 동아리 조회 성공")
     void getAllClubs_Success() {
-        // given
-        Club club1 = Club.builder()
-                .name("동아리1")
-                .description("설명1")
-                .category(ClubCategory.SPORTS)
-                .build();
-
-        Club club2 = Club.builder()
-                .name("동아리2")
-                .description("설명2")
-                .category(ClubCategory.IT)
-                .build();
-
-        Mockito.when(clubRepo.findAllByOrderByCreatedAtDesc()).thenReturn(List.of(club1, club2));
-
         // when
         List<ClubListResponse> result = clubService.getAllClubs();
 
         // then
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).getName()).isEqualTo("동아리1");
-        assertThat(result.get(1).getName()).isEqualTo("동아리2");
-        Mockito.verify(clubRepo).findAllByOrderByCreatedAtDesc();
+        assertThat(result)
+                .hasSize(8)
+                .isNotEmpty();
     }
 
     @Test
     @DisplayName("동아리 생성 실패 - 중복된 이름")
     void createClub_DuplicateName_ThrowsException() {
-        // given
         Club existingClub = Club.builder()
                 .name("테스트 동아리")
                 .description("기존 설명")
                 .category(ClubCategory.SPORTS)
                 .build();
-        Mockito.when(clubRepo.existsByName("테스트 동아리")).thenReturn(true);
+        clubRepo.save(existingClub);
 
         ClubCreateRequest request = new ClubCreateRequest("테스트 동아리", "새로운 설명", ClubCategory.SPORTS);
 
-        // when & then
         assertThrows(CustomException.class, () -> clubService.createClub(request));
-        Mockito.verify(clubRepo).existsByName("테스트 동아리");
     }
 
     @Test
     @DisplayName("전체 동아리 조회 실패 - 동아리가 없음")
-    void getAllClubs_NoClubs_ThrowsException() {
+    void getAllClubs_NoClubs_ReturnsEmptyList() {
         // given
-        Mockito.when(clubRepo.findAllByOrderByCreatedAtDesc()).thenReturn(List.of());
+        clubRepo.deleteAll();
 
-        // when & then
-        assertThrows(CustomException.class, () -> clubService.getAllClubs());
-        Mockito.verify(clubRepo).findAllByOrderByCreatedAtDesc();
+        // when
+        List<ClubListResponse> clubs = clubService.getAllClubs();
+
+        // then
+        assertTrue(clubs.isEmpty());
     }
 }

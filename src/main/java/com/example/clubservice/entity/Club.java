@@ -32,6 +32,7 @@ public class Club {
     @Enumerated(EnumType.STRING)
     private ClubCategory category;
 
+
     public void update(ClubUpdateRequest request) {
         this.name = request.getName();
         this.description = request.getDescription();
