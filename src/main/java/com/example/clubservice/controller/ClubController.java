@@ -22,7 +22,7 @@ public class ClubController {
 
     private final ClubService clubService;
 
-    @PostMapping
+    @PostMapping("/create")
     public Response<String> createClub(@Valid @RequestBody ClubCreateRequest request) {
         clubService.createClub(request);
         return Response.created("정상적으로 생성되었습니다.");
