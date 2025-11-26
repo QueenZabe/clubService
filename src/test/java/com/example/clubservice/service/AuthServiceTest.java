@@ -5,6 +5,7 @@ import com.example.clubservice.dto.response.TokenResponse;
 import com.example.clubservice.entity.Member;
 import com.example.clubservice.enums.Authority;
 import com.example.clubservice.exception.CustomException;
+import com.example.clubservice.exception.error.ErrorCode;
 import com.example.clubservice.repository.MemberRepository;
 import com.example.clubservice.repository.RefreshTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -96,7 +98,12 @@ class AuthServiceTest {
         });
 
         // then
-        assertThat(exception.getCause()).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> authService.login(request))
+                .isInstanceOf(CustomException.class)
+                .satisfies(e -> {
+                    CustomException customException = (CustomException) e;
+                    assertThat(customException.getError()).isEqualTo(ErrorCode.USER_NOT_FOUND);
+                });
     }
 
     @DisplayName("잘못된 비밀번호로 로그인하면 예외가 발생한다")

@@ -53,18 +53,24 @@ public class ClubServiceImpl implements ClubService{
     }
 
     @Override
+    public ClubResponse getClubById(Long id) {
+        if (id == null || id <= 0) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
+        Club club = clubRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        return ClubResponse.from(club);
+    }
+
+    @Override
     public List<ClubListResponse> findAllByCategory(ClubCategory category) {
         if (category == null) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
 
-        List<Club> clubs = clubRepository.findAllByCategory(category);
-
-        if (clubs.isEmpty()) {
-            throw new CustomException(ErrorCode.NOT_FOUND);
-        }
-
-        return clubs.stream()
+        return clubRepository.findAllByCategory(category).stream()
                 .map(ClubListResponse::from)
                 .toList();
     }
@@ -78,9 +84,14 @@ public class ClubServiceImpl implements ClubService{
         Club club = clubRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        club.update(updateRequest);
-
-        clubRepository.save(club);
+        try {
+            club.update(updateRequest);
+            clubRepository.save(club);
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
@@ -92,7 +103,12 @@ public class ClubServiceImpl implements ClubService{
         if (!clubRepository.existsById(id)) {
             throw new CustomException(ErrorCode.NOT_FOUND);
         }
-        clubRepository.deleteById(id);
+
+        try {
+            clubRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
@@ -119,18 +135,10 @@ public class ClubServiceImpl implements ClubService{
             }
 
             workbook.write(os);
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.FILE_WRITE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @Override
-    public ClubResponse getClubById(Long id) {
-        if (id == null || id <= 0) {
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-        }
-
-        Club club = clubRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
-
-        return ClubResponse.from(club);
     }
 }

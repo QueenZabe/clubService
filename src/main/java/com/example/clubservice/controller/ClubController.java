@@ -33,6 +33,12 @@ public class ClubController {
         return Response.ok(response);
     }
 
+    @GetMapping("/{id}")
+    public Response<ClubResponse> getClub(@PathVariable Long id) {
+        ClubResponse club = clubService.getClubById(id);
+        return Response.ok(club);
+    }
+
     @GetMapping("/{category}")
     public Response<List<ClubListResponse>> getClubsByCategory(@PathVariable ClubCategory category) {
         List<ClubListResponse> clubs = clubService.findAllByCategory(category);
@@ -64,11 +70,5 @@ public class ClubController {
         clubService.writeClubExcel(response.getOutputStream());
 
         return Response.ok("다운로드 되었습니다.");
-    }
-
-    @GetMapping("/{id}")
-    public Response<ClubResponse> getClub(@PathVariable Long id) {
-        ClubResponse club = clubService.getClubById(id);
-        return Response.ok(club);
     }
 }
