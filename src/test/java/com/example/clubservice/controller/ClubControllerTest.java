@@ -5,8 +5,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.clubservice.dto.request.ClubCreateRequest;
 import com.example.clubservice.entity.Club;
+import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
+import com.example.clubservice.service.ClubService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,9 +23,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class ClubControllerTest {
+    @Autowired
+    private ClubService clubService;
 
     @Autowired
     protected MockMvc mockMvc;
@@ -100,6 +107,79 @@ class ClubControllerTest {
 
         // when
         final ResultActions result = mockMvc.perform(delete(url));
+
+        // then
+        result
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    @DisplayName("POST /clubs - 동아리 생성 성공")
+    void createClub_Success() {
+        // given
+        ClubCreateRequest request = new ClubCreateRequest("테스트 동아리", "테스트 설명", ClubCategory.SPORTS);
+
+        // when
+        clubService.createClub(request);
+        Club result = clubRepo.findByName(request.getName());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("테스트 동아리");
+        assertThat(result.getCategory()).isEqualTo(ClubCategory.SPORTS);
+    }
+
+    @Test
+    @DisplayName("GET /club/list - 전체 동아리 조회 성공")
+    public void findAll_success() throws Exception {
+        // given
+        final String url = "/club/list";
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.data").isArray());
+    }
+
+    @DisplayName("동아리 단일 조회 성공 시 200 OK와 데이터 반환")
+    @Test
+    void getClub_Success() throws Exception {
+        // given
+        Club club = clubRepo.findAll().get(0);
+        Long clubId = club.getId();
+        final String url = "/club/" + clubId;
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.data.id").value(clubId))
+                .andExpect(jsonPath("$.data.name").value(club.getName()))
+                .andExpect(jsonPath("$.data.category").value(club.getCategory().name()));
+    }
+
+    @DisplayName("GET, /club/{id} 요청 시 존재하지 않는 동아리면 404 Not Found 반환")
+    @Test
+    void getClub_NotFound() throws Exception {
+        // given
+        Long nonExistentId = 999L;
+        final String url = "/club/" + nonExistentId;
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
 
         // then
         result

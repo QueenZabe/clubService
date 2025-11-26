@@ -8,6 +8,7 @@ import com.example.clubservice.dto.response.Response;
 import com.example.clubservice.dto.response.ClubListResponse;
 import com.example.clubservice.service.ClubService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +22,19 @@ public class ClubController {
 
     private final ClubService clubService;
 
-    @PostMapping("/create")
-    public Response<String> createClub(@RequestBody ClubCreateRequest request) {
+    @PostMapping
+    public Response<String> createClub(@Valid @RequestBody ClubCreateRequest request) {
         clubService.createClub(request);
         return Response.created("정상적으로 생성되었습니다.");
+    }
+
+    @PutMapping("/{id}")
+    public Response<Void> updateClub(
+            @PathVariable Long id,
+            @Valid @RequestBody ClubUpdateRequest updateRequest
+    ) {
+        clubService.updateClub(id, updateRequest);
+        return Response.ok("성공적으로 업데이트 되었습니다.");
     }
 
     @GetMapping("/list")
@@ -35,24 +45,15 @@ public class ClubController {
 
     @GetMapping("/{id}")
     public Response<ClubResponse> getClub(@PathVariable Long id) {
-        ClubResponse club = clubService.getClubById(id);
-        return Response.ok(club);
+        ClubResponse response = clubService.getClubById(id);
+        return Response.ok(response);
     }
 
-    @GetMapping("/{category}")
+    @GetMapping("/category/{category}")
     public Response<List<ClubListResponse>> getClubsByCategory(@PathVariable ClubCategory category) {
-        List<ClubListResponse> clubs = clubService.findAllByCategory(category);
+        List<ClubListResponse> responses = clubService.findAllByCategory(category);
 
-        return Response.ok(clubs);
-    }
-
-    @PutMapping("/{id}")
-    public Response<Void> updateClub(
-            @PathVariable Long id,
-            @RequestBody ClubUpdateRequest updateRequest
-    ) {
-        clubService.updateClub(id, updateRequest);
-        return Response.ok("성공적으로 업데이트 되었습니다.");
+        return Response.ok(responses);
     }
 
     @DeleteMapping("/{id}")
