@@ -5,6 +5,8 @@ import com.example.clubservice.dto.request.ClubUpdateRequest;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.dto.response.ClubListResponse;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 public interface ClubService {
@@ -14,4 +16,5 @@ public interface ClubService {
     List<ClubListResponse> findAllByCategory(ClubCategory category);
     void updateClub(Long id, ClubUpdateRequest updateReq);
     void deleteClub(Long id);
+    void writeClubExcel(OutputStream os) throws IOException;
 }
