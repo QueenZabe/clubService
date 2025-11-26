@@ -95,31 +95,30 @@ public class ClubServiceImpl implements ClubService{
         clubRepository.deleteById(id);
     }
 
+    @Override
     public void writeClubExcel(OutputStream os) throws IOException {
-        Workbook workbook = new XSSFWorkbook();                         // 새 엑셀 워크북 생성
-        Sheet sheet = workbook.createSheet("Clubs");                     // 시트 생성
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Clubs");
 
-        // 헤더 작성
-        Row header = sheet.createRow(0);                                 // 헤더 생성
-        header.createCell(0).setCellValue("동아리명");
-        header.createCell(1).setCellValue("설명");
-        header.createCell(2).setCellValue("카테고리");
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("동아리명");
+            header.createCell(1).setCellValue("설명");
+            header.createCell(2).setCellValue("카테고리");
 
-        // DTO 리스트 가져오기
-        List<ClubResponse> clubs = clubRepository.findAll()              // 엔티티 조회
-                .stream()
-                .map(ClubResponse::from)                                 // DTO로 변환
-                .toList();
+            List<ClubResponse> clubs = clubRepository.findAll()
+                    .stream()
+                    .map(ClubResponse::from)
+                    .toList();
 
-        int rowIdx = 1;
-        for (ClubResponse club : clubs) {
-            Row row = sheet.createRow(rowIdx++);                         // 새로운 행 생성
-            row.createCell(0).setCellValue(club.getName());
-            row.createCell(1).setCellValue(club.getDescription());
-            row.createCell(2).setCellValue(club.getCategory().name());
+            int rowIdx = 1;
+            for (ClubResponse club : clubs) {
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(club.getName());
+                row.createCell(1).setCellValue(club.getDescription());
+                row.createCell(2).setCellValue(club.getCategory().name());
+            }
+
+            workbook.write(os);
         }
-
-        workbook.write(os);                                              // 엑셀 파일로 출력
-        workbook.close();                                                // 리소스 정리
     }
 }

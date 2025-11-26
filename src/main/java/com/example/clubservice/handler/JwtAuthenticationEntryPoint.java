@@ -18,13 +18,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         String requestURI = request.getRequestURI();
         log.error("인증 실패 - URI: {}, 에러: {}", requestURI, authException.getMessage());
 
-        if (requestURI.startsWith("/auth/signup") ||
-                requestURI.startsWith("/auth/login") ||
-                requestURI.startsWith("/auth/reissue")) {
-            log.info("Public 경로이므로 401 반환하지 않음: {}", requestURI);
-            return;
-        }
-
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
 }

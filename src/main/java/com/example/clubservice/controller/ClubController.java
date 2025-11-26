@@ -56,12 +56,12 @@ public class ClubController {
     }
 
     @GetMapping("/clubs/excel")
-    public void downloadClubExcel(HttpServletResponse response) throws IOException {
-        // 응답 헤더에 엑셀 파일 다운로드 설정
-        response.setContentType("application/vnd.ms-excel"); // 엑셀 MIME 타입
-        response.setHeader("Content-Disposition", "attachment; filename=clubs.xlsx"); // 다운로드 파일 이름 지정
+    public Response<Void> downloadClubExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=clubs.xlsx");
 
-        // 서비스에서 엑셀 워크북 생성 후 HTTP 응답 스트림으로 전달
-        clubService.writeClubExcel(response.getOutputStream()); // OutputStream에 엑셀 데이터 작성
+        clubService.writeClubExcel(response.getOutputStream());
+
+        return Response.ok("다운로드 되었습니다.");
     }
 }
