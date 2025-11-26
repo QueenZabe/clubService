@@ -107,4 +107,38 @@ class ClubControllerTest {
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").exists());
     }
+
+    @Test
+    @DisplayName("POST /clubs - 동아리 생성 성공")
+    void createClub_Success() {
+        // given
+        ClubCreateRequest request = new ClubCreateRequest("테스트 동아리", "테스트 설명", ClubCategory.SPORTS);
+
+        // when
+        clubService.createClub(request);
+        Club result = clubRepo.findByName(request.getName());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("테스트 동아리");
+        assertThat(result.getCategory()).isEqualTo(ClubCategory.SPORTS);
+    }
+
+    @Test
+    @DisplayName("GET /club/list - 전체 동아리 조회 성공")
+    public void findAll_success() throws Exception {
+        // given
+        final String url = "/club/list";
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.data").isArray());
+    }
+
 }
