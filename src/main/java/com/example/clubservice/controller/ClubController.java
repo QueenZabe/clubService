@@ -3,7 +3,7 @@ package com.example.clubservice.controller;
 import com.example.clubservice.dto.request.ClubCreateRequest;
 import com.example.clubservice.dto.request.ClubUpdateRequest;
 import com.example.clubservice.enums.ClubCategory;
-import com.example.clubservice.response.Response;
+import com.example.clubservice.dto.response.Response;
 import com.example.clubservice.dto.response.ClubListResponse;
 import com.example.clubservice.service.ClubService;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clubs")
+@RequestMapping("/club")
 @AllArgsConstructor
 public class ClubController {
 
