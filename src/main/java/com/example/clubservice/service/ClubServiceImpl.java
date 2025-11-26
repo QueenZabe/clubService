@@ -121,4 +121,16 @@ public class ClubServiceImpl implements ClubService{
             workbook.write(os);
         }
     }
+
+    @Override
+    public ClubResponse getClubById(Long id) {
+        if (id == null || id <= 0) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
+        Club club = clubRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        return ClubResponse.from(club);
+    }
 }

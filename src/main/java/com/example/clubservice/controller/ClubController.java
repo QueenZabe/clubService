@@ -2,6 +2,7 @@ package com.example.clubservice.controller;
 
 import com.example.clubservice.dto.request.ClubCreateRequest;
 import com.example.clubservice.dto.request.ClubUpdateRequest;
+import com.example.clubservice.dto.response.ClubResponse;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.dto.response.Response;
 import com.example.clubservice.dto.response.ClubListResponse;
@@ -63,5 +64,11 @@ public class ClubController {
         clubService.writeClubExcel(response.getOutputStream());
 
         return Response.ok("다운로드 되었습니다.");
+    }
+
+    @GetMapping("/{id}")
+    public Response<ClubResponse> getClub(@PathVariable Long id) {
+        ClubResponse club = clubService.getClubById(id);
+        return Response.ok(club);
     }
 }
