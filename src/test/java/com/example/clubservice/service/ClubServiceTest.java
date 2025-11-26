@@ -160,4 +160,4 @@ class ClubServiceTest {
         // then
         assertTrue(clubs.isEmpty());
     }
-}
+}}
