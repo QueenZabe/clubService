@@ -1,6 +1,7 @@
 package com.example.clubservice.service;
 
 import com.example.clubservice.dto.request.ClubCreateRequest;
+import com.example.clubservice.dto.request.ClubUpdateRequest;
 import com.example.clubservice.dto.response.ClubResponse;
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
@@ -56,16 +57,39 @@ class ClubServiceTest {
         });
     }
 
-    @DisplayName("해당 카테고리에 동아리가 없으면 NOT_FOUND 예외가 발생한다")
+    @DisplayName("존재하는 동아리 ID로 업데이트하면 정보가 변경된다")
     @Test
-    void findAllByCategory_NoClubs_ThrowsException() {
+    void updateClub_Success() {
         // given
-        clubRepo.deleteAll(); // 모든 동아리 삭제
-        ClubCategory category = ClubCategory.IT;
+        Club club = clubRepo.findAll().get(0);
+        Long clubId = club.getId();
+
+        ClubUpdateRequest updateRequest = new ClubUpdateRequest(
+                "업데이트 동아리", "설명 변경", ClubCategory.SPORTS
+        );
+
+        // when
+        clubService.updateClub(clubId, updateRequest);
+        Club updated = clubRepo.findById(clubId).orElseThrow();
+
+        // then
+        assertThat(updated.getName()).isEqualTo("업데이트 동아리");
+        assertThat(updated.getDescription()).isEqualTo("설명 변경");
+        assertThat(updated.getCategory()).isEqualTo(ClubCategory.SPORTS);
+    }
+
+    @DisplayName("존재하지 않는 ID로 업데이트하면 NOT_FOUND 예외 발생")
+    @Test
+    void updateClub_NotExist_ThrowsException() {
+        // given
+        ClubUpdateRequest updateRequest = new ClubUpdateRequest(
+                "업데이트 동아리", "설명 변경", ClubCategory.SPORTS
+        );
+        Long nonExistentId = 99999L;
 
         // when & then
         assertThrows(CustomException.class, () -> {
-            clubService.findAllByCategory(category);
+            clubService.updateClub(nonExistentId, updateRequest);
         });
     }
 

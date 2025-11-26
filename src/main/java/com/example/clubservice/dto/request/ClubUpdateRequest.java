@@ -3,9 +3,11 @@ package com.example.clubservice.dto.request;
 import com.example.clubservice.enums.ClubCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class ClubUpdateRequest {
     @NotBlank(message = "동아리명은 필수 입력입니다.") // null, 빈 문자열 체크
     private String name;
