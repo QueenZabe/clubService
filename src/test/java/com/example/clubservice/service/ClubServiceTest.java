@@ -1,6 +1,7 @@
 package com.example.clubservice.service;
 
 import com.example.clubservice.dto.request.ClubCreateRequest;
+import com.example.clubservice.dto.response.ClubResponse;
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
@@ -172,5 +173,33 @@ class ClubServiceTest {
 
         // then
         assertTrue(clubs.isEmpty());
+    }
+
+    @DisplayName("존재하는 ID로 동아리 단일 조회에 성공한다")
+    @Test
+    void getClubById_Success() {
+        // given
+        Club firstClub = clubRepo.findAll().getFirst(); // 첫 번째 동아리 선택
+        Long id = firstClub.getId();
+
+        // when
+        ClubResponse result = clubService.getClubById(id);
+
+        // then
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isEqualTo(id);
+        Assertions.assertThat(result.getName()).isEqualTo(firstClub.getName());
+    }
+
+    @DisplayName("존재하지 않는 ID로 조회하면 NOT_FOUND 예외 발생")
+    @Test
+    void getClubById_NotExist_ThrowsException() {
+        // given
+        Long nonExistentId = 99999L;
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            clubService.getClubById(nonExistentId);
+        });
     }
 }

@@ -1,13 +1,17 @@
 package com.example.clubservice.controller;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.clubservice.dto.request.ClubCreateRequest;
+import com.example.clubservice.dto.response.ClubResponse;
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
+import com.example.clubservice.exception.CustomException;
+import com.example.clubservice.exception.error.ErrorCode;
 import com.example.clubservice.repository.ClubRepository;
 import com.example.clubservice.service.ClubService;
 import org.junit.jupiter.api.AfterEach;
@@ -148,4 +152,43 @@ class ClubControllerTest {
                 .andExpect(jsonPath("$.data").isArray());
     }
 
+    @DisplayName("동아리 단일 조회 성공 시 200 OK와 데이터 반환")
+    @Test
+    void getClub_Success() throws Exception {
+        // given
+        Club club = clubRepo.findAll().get(0);
+        Long clubId = club.getId();
+        final String url = "/club/" + clubId;
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.data.id").value(clubId))
+                .andExpect(jsonPath("$.data.name").value(club.getName()))
+                .andExpect(jsonPath("$.data.category").value(club.getCategory().name()));
+    }
+
+    @DisplayName("GET, /club/{id} 요청 시 존재하지 않는 동아리면 404 Not Found 반환")
+    @Test
+    void getClub_NotFound() throws Exception {
+        // given
+        Long nonExistentId = 999L;
+        final String url = "/club/" + nonExistentId;
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").exists());
+    }
 }
