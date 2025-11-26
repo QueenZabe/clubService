@@ -1,0 +1,24 @@
+package com.example.clubservice.handler;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+@Slf4j
+@Component
+public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        String requestURI = request.getRequestURI();
+        log.error("접근 거부 - URI: {}, 에러: {}", requestURI, accessDeniedException.getMessage());
+
+        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+    }
+}

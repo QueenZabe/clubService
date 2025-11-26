@@ -3,7 +3,7 @@ package com.example.clubservice.controller;
 import com.example.clubservice.dto.request.ClubCreateRequest;
 import com.example.clubservice.dto.request.ClubUpdateRequest;
 import com.example.clubservice.enums.ClubCategory;
-import com.example.clubservice.response.Response;
+import com.example.clubservice.dto.response.Response;
 import com.example.clubservice.dto.response.ClubListResponse;
 import com.example.clubservice.service.ClubService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clubs")
+@RequestMapping("/club")
 @AllArgsConstructor
 public class ClubController {
 
@@ -26,7 +26,7 @@ public class ClubController {
         return Response.created("정상적으로 생성되었습니다.");
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public Response<List<ClubListResponse>> getAllClubs() {
         List<ClubListResponse> response = clubService.getAllClubs();
         return Response.ok(response);
