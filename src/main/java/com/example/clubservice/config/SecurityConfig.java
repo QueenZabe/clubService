@@ -39,29 +39,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // CSRF 설정 Disable
                 .csrf(AbstractHttpConfigurer::disable)
 
-                // CORS 필터 추가
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // Exception handling 설정
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
 
-                // H2 콘솔을 위한 설정
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin())
                 )
 
-                // 세션을 사용하지 않음
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // 권한 설정
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/auth/signup", "/auth/login", "/auth/reissue").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
@@ -69,7 +63,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // JWT 필터 추가
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

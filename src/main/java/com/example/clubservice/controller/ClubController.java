@@ -24,7 +24,7 @@ public class ClubController {
         return Response.created("정상적으로 생성되었습니다.");
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public Response<List<ClubListResponse>> getAllClubs() {
         List<ClubListResponse> response = clubService.getAllClubs();
         return Response.ok(response);

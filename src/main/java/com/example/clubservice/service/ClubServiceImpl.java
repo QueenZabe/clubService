@@ -24,7 +24,7 @@ public class ClubServiceImpl implements ClubService{
     @Override
     public void createClub(ClubCreateRequest request) {
         if (clubRepository.existsByName(request.getName())) {
-            throw new IllegalArgumentException("해당 이름의 동아리가 이미 존재합니다.");
+            throw new CustomException(ErrorCode.ALREADY_EXISTS_CLUB);
         }
 
         Club club = Club.builder()

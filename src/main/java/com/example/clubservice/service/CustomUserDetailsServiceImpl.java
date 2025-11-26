@@ -1,6 +1,8 @@
 package com.example.clubservice.service;
 
 import com.example.clubservice.entity.Member;
+import com.example.clubservice.exception.CustomException;
+import com.example.clubservice.exception.error.ErrorCode;
 import com.example.clubservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,7 +25,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
         return memberRepository.findById(phone)
                 .map(this::createUserDetails)
-                .orElseThrow(() -> new UsernameNotFoundException(phone + " -> 데이터베이스에서 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     private UserDetails createUserDetails(Member member) {
