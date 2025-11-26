@@ -49,7 +49,7 @@ public class ClubController {
         return Response.ok(club);
     }
 
-    @GetMapping("/{category}")
+    @GetMapping("/category/{category}")
     public Response<List<ClubListResponse>> getClubsByCategory(@PathVariable ClubCategory category) {
         List<ClubListResponse> clubs = clubService.findAllByCategory(category);
 

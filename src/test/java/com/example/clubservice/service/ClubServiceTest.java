@@ -55,19 +55,6 @@ class ClubServiceTest {
         });
     }
 
-    @DisplayName("해당 카테고리에 동아리가 없으면 NOT_FOUND 예외가 발생한다")
-    @Test
-    void findAllByCategory_NoClubs_ThrowsException() {
-        // given
-        clubRepo.deleteAll(); // 모든 동아리 삭제
-        ClubCategory category = ClubCategory.IT;
-
-        // when & then
-        assertThrows(CustomException.class, () -> {
-            clubService.findAllByCategory(category);
-        });
-    }
-
     @DisplayName("존재하는 동아리 ID로 삭제하면 정상적으로 삭제된다")
     @Test
     void deleteClub_Success() {

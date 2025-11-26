@@ -54,7 +54,7 @@ class ClubControllerTest {
     @Test
     public void getClubsByCategory_success() throws Exception {
         // given
-        final String url = "/club/IT";
+        final String url = "/club/category/IT";
 
         // when
         final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
@@ -71,7 +71,7 @@ class ClubControllerTest {
     @Test
     public void getClubsByCategory_InvalidCategory_Fail() throws Exception {
         // given
-        final String url = "/club/INVALID_CATEGORY";
+        final String url = "/club/category/INVALID_CATEGORY";
 
         // when
         final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
