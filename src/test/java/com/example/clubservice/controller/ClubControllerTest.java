@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class ClubControllerTest {
