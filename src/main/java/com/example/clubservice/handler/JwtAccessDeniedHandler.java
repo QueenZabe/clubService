@@ -1,6 +1,8 @@
 package com.example.clubservice.handler;
 
-import jakarta.servlet.ServletException;
+import com.example.clubservice.exception.ErrorResponse;
+import com.example.clubservice.exception.error.ErrorCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
