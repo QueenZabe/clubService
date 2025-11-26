@@ -1,4 +1,4 @@
-package com.example.clubservice.presentation;
+package com.example.clubservice.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,11 +43,11 @@ class ClubControllerTest {
         clubRepo.deleteAll();
     }
 
-    @DisplayName("GET, /clubs/IT 요청 시 200 OK와 IT 카테고리 동아리 목록이 반환된다")
+    @DisplayName("GET, /club/IT 요청 시 200 OK와 IT 카테고리 동아리 목록이 반환된다")
     @Test
     public void getClubsByCategory_success() throws Exception {
         // given
-        final String url = "/clubs/IT";
+        final String url = "/club/IT";
 
         // when
         final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
@@ -60,11 +60,11 @@ class ClubControllerTest {
                 .andExpect(jsonPath("$.data").isArray());
     }
 
-    @DisplayName("GET, /clubs/INVALID 요청 시 400 Bad Request가 반환된다")
+    @DisplayName("GET, /club/INVALID 요청 시 400 Bad Request가 반환된다")
     @Test
     public void getClubsByCategory_InvalidCategory_Fail() throws Exception {
         // given
-        final String url = "/clubs/INVALID_CATEGORY";
+        final String url = "/club/INVALID_CATEGORY";
 
         // when
         final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
@@ -73,13 +73,13 @@ class ClubControllerTest {
         result.andExpect(status().isBadRequest());
     }
 
-    @DisplayName("DELETE, /clubs/{id} 요청 시 200 OK와 성공 메시지가 반환된다")
+    @DisplayName("DELETE, /club/{id} 요청 시 200 OK와 성공 메시지가 반환된다")
     @Test
     public void deleteClub_Success() throws Exception {
         // given
         Club club = clubRepo.findAll().get(0);
         Long clubId = club.getId();
-        final String url = "/clubs/" + clubId;
+        final String url = "/club/" + clubId;
 
         // when
         final ResultActions result = mockMvc.perform(delete(url));
@@ -91,12 +91,12 @@ class ClubControllerTest {
                 .andExpect(jsonPath("$.message").value("성공적으로 삭제되었습니다."));
     }
 
-    @DisplayName("DELETE, /clubs/{id} 요청 시 존재하지 않는 ID면 404 Not Found가 반환된다")
+    @DisplayName("DELETE, /club/{id} 요청 시 존재하지 않는 ID면 404 Not Found가 반환된다")
     @Test
     public void deleteClub_NotFound() throws Exception {
         // given
         Long nonExistentId = 99999L;
-        final String url = "/clubs/" + nonExistentId;
+        final String url = "/club/" + nonExistentId;
 
         // when
         final ResultActions result = mockMvc.perform(delete(url));

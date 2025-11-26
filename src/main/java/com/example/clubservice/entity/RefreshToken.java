@@ -8,10 +8,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
 @Entity
 @Table(name = "tb_refresh_token")
+@Getter
+@NoArgsConstructor
 public class RefreshToken {
 
     @Id

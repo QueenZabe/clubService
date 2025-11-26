@@ -11,10 +11,10 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @Entity
+@Table(name = "tb_member")
 @Getter
 @SuperBuilder
 @NoArgsConstructor
-@Table(name = "tb_member")
 public class Member {
 
     @Id

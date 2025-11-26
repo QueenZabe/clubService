@@ -38,14 +38,14 @@ public class AuthServiceImpl implements AuthService {
         memberRepository.save(member);
     }
 
-    public TokenResponse login(LoginRequest req) {
-        UsernamePasswordAuthenticationToken authenticationToken = req.toAuthentication();
+    public TokenResponse login(LoginRequest request) {
+        Member member = memberRepository.findById(request.phone())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        UsernamePasswordAuthenticationToken authenticationToken = request.toAuthentication();
 
         Authentication authentication =
                 authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        Member member = memberRepository.findById(req.phone())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         AuthDetails authDetails = new AuthDetails(member);
 
@@ -55,16 +55,16 @@ public class AuthServiceImpl implements AuthService {
                 authentication.getAuthorities()
         );
 
-        TokenResponse tokenRes = tokenProvider.generateTokenResponse(newAuth);
+        TokenResponse tokenResponse = tokenProvider.generateTokenResponse(newAuth);
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(member.getPhone())
-                .value(tokenRes.refreshToken())
+                .value(tokenResponse.refreshToken())
                 .build();
 
         refreshTokenRepository.save(refreshToken);
 
-        return tokenRes;
+        return tokenResponse;
     }
 
     public TokenResponse reissue(TokenRequest request) {
@@ -82,11 +82,11 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ErrorCode.TOKEN_MISMATCH);
         }
 
-        TokenResponse tokenRes = tokenProvider.generateTokenResponse(authentication);
+        TokenResponse tokenResponse = tokenProvider.generateTokenResponse(authentication);
 
-        RefreshToken newRefreshToken = refreshToken.updateValue(tokenRes.refreshToken());
+        RefreshToken newRefreshToken = refreshToken.updateValue(tokenResponse.refreshToken());
         refreshTokenRepository.save(newRefreshToken);
 
-        return tokenRes;
+        return tokenResponse;
     }
 }
