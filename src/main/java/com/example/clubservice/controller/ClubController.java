@@ -20,7 +20,7 @@ public class ClubController {
 
     private final ClubService clubService;
 
-    @PostMapping
+    @PostMapping("/create")
     public Response<String> createClub(@RequestBody ClubCreateRequest request) {
         clubService.createClub(request);
         return Response.created("정상적으로 생성되었습니다.");
@@ -55,7 +55,7 @@ public class ClubController {
         return Response.ok("성공적으로 삭제되었습니다.");
     }
 
-    @GetMapping("/clubs/excel")
+    @GetMapping("/excel")
     public Response<Void> downloadClubExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=clubs.xlsx");

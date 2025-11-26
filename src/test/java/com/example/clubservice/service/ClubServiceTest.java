@@ -41,20 +41,6 @@ class ClubServiceTest {
 
     }
 
-    @DisplayName("존재하는 동아리 ID로 삭제하면 정상적으로 삭제된다")
-    @Test
-    void deleteClub_Success() {
-        // given
-        Club club = clubRepo.findAll().get(0);
-        Long clubId = club.getId();
-
-        // when
-        clubService.deleteClub(clubId);
-
-        // then
-        assertThat(clubRepo.existsById(clubId)).isFalse();
-    }
-
     @DisplayName("null 카테고리로 조회하면 BAD_REQUEST 예외가 발생한다")
     @Test
     void findAllByCategory_NullCategory_ThrowsException() {
@@ -78,6 +64,20 @@ class ClubServiceTest {
         assertThrows(CustomException.class, () -> {
             clubService.findAllByCategory(category);
         });
+    }
+
+    @DisplayName("존재하는 동아리 ID로 삭제하면 정상적으로 삭제된다")
+    @Test
+    void deleteClub_Success() {
+        // given
+        Club club = clubRepo.findAll().get(0);
+        Long clubId = club.getId();
+
+        // when
+        clubService.deleteClub(clubId);
+
+        // then
+        assertThat(clubRepo.existsById(clubId)).isFalse();
     }
 
     @DisplayName("null ID로 삭제하면 BAD_REQUEST 예외가 발생한다")

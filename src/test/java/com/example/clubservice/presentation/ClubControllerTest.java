@@ -60,6 +60,19 @@ class ClubControllerTest {
                 .andExpect(jsonPath("$.data").isArray());
     }
 
+    @DisplayName("GET, /clubs/INVALID 요청 시 400 Bad Request가 반환된다")
+    @Test
+    public void getClubsByCategory_InvalidCategory_Fail() throws Exception {
+        // given
+        final String url = "/clubs/INVALID_CATEGORY";
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().isBadRequest());
+    }
+
     @DisplayName("DELETE, /clubs/{id} 요청 시 200 OK와 성공 메시지가 반환된다")
     @Test
     public void deleteClub_Success() throws Exception {
@@ -76,19 +89,6 @@ class ClubControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.message").value("성공적으로 삭제되었습니다."));
-    }
-
-    @DisplayName("GET, /clubs/INVALID 요청 시 400 Bad Request가 반환된다")
-    @Test
-    public void getClubsByCategory_InvalidCategory_Fail() throws Exception {
-        // given
-        final String url = "/clubs/INVALID_CATEGORY";
-
-        // when
-        final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
-
-        // then
-        result.andExpect(status().isBadRequest());
     }
 
     @DisplayName("DELETE, /clubs/{id} 요청 시 존재하지 않는 ID면 404 Not Found가 반환된다")
