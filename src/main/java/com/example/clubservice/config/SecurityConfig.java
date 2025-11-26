@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/signup", "/auth/login", "/auth/reissue").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/club/category/{category}").authenticated()
                         .anyRequest().authenticated()
                 )
 
