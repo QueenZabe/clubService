@@ -14,11 +14,23 @@ import java.io.IOException;
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         String requestURI = request.getRequestURI();
         log.error("접근 거부 - URI: {}, 에러: {}", requestURI, accessDeniedException.getMessage());
 
-        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+        ErrorCode errorCode = ErrorCode.ACCESS_DENIED;
+
+        response.setStatus(errorCode.getStatus().value());
+        response.setContentType("application/json;charset=UTF-8");
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(errorCode.getStatus().value())
+                .message(errorCode.getMessage())
+                .build();
+
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }
