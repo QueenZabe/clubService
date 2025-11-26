@@ -52,6 +52,9 @@ dependencies {
     // Apache POI (엑셀 파일 생성)
     implementation 'org.apache.poi:poi:5.2.5'              // HSSF (xls)
     implementation 'org.apache.poi:poi-ooxml:5.2.5'        // XSSF (xlsx)
+
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {
