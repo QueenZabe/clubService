@@ -50,11 +50,11 @@ class ClubControllerTest {
         clubRepo.deleteAll();
     }
 
-    @DisplayName("GET, /club/IT 요청 시 200 OK와 IT 카테고리 동아리 목록이 반환된다")
+    @DisplayName("GET, /club/category/IT 요청 시 200 OK와 IT 카테고리 동아리 목록이 반환된다")
     @Test
     public void getClubsByCategory_success() throws Exception {
         // given
-        final String url = "/club/IT";
+        final String url = "/club/category/IT";
 
         // when
         final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
