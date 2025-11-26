@@ -1,14 +1,11 @@
 package com.example.clubservice.service;
 
 import com.example.clubservice.dto.request.LoginRequest;
-import com.example.clubservice.dto.response.ClubResponse;
 import com.example.clubservice.dto.response.TokenResponse;
-import com.example.clubservice.entity.Club;
 import com.example.clubservice.entity.Member;
 import com.example.clubservice.enums.Authority;
 import com.example.clubservice.exception.CustomException;
 import com.example.clubservice.exception.error.ErrorCode;
-import com.example.clubservice.repository.ClubRepository;
 import com.example.clubservice.repository.MemberRepository;
 import com.example.clubservice.repository.RefreshTokenRepository;
 import org.junit.jupiter.api.BeforeEach;

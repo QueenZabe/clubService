@@ -1,17 +1,13 @@
 package com.example.clubservice.controller;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.clubservice.dto.request.ClubCreateRequest;
-import com.example.clubservice.dto.response.ClubResponse;
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
-import com.example.clubservice.exception.CustomException;
-import com.example.clubservice.exception.error.ErrorCode;
 import com.example.clubservice.repository.ClubRepository;
 import com.example.clubservice.service.ClubService;
 import org.junit.jupiter.api.AfterEach;
