@@ -18,6 +18,8 @@ public enum ErrorCode implements CustomErrorCode {
     ALREADY_EXISTS_USER(HttpStatus.CONFLICT, "이미 가입되어 있는 유저입니다."),
     ALREADY_EXISTS_CLUB(HttpStatus.CONFLICT, "해당 이름의 동아리가 이미 존재합니다."),
 
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근이 거부되었습니다."),
+
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 토큰입니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh Token이 유효하지 않습니다."),
     LOGGED_OUT_USER(HttpStatus.UNAUTHORIZED, "로그아웃된 사용자입니다."),
