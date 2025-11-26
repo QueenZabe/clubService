@@ -5,8 +5,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.clubservice.dto.request.ClubCreateRequest;
 import com.example.clubservice.entity.Club;
+import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
+import com.example.clubservice.service.ClubService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

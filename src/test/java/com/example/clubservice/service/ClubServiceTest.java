@@ -1,10 +1,12 @@
 package com.example.clubservice.service;
 
+import com.example.clubservice.dto.request.ClubCreateRequest;
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
 import com.example.clubservice.exception.CustomException;
 import com.example.clubservice.dto.response.ClubListResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
