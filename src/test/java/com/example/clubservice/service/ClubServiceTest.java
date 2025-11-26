@@ -1,10 +1,12 @@
 package com.example.clubservice.service;
 
+import com.example.clubservice.dto.request.ClubCreateRequest;
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
 import com.example.clubservice.exception.CustomException;
 import com.example.clubservice.dto.response.ClubListResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,5 +116,61 @@ class ClubServiceTest {
         assertThrows(CustomException.class, () -> {
             clubService.deleteClub(nonExistentId);
         });
+    }
+
+    @Test
+    @DisplayName("동아리 생성 성공")
+    void createClub_Success() {
+        // given
+        ClubCreateRequest request = new ClubCreateRequest("테스트 동아리", "테스트 설명", ClubCategory.SPORTS);
+
+        // when
+        clubService.createClub(request);
+        Club result = clubRepo.findByName(request.getName());
+
+        // then
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getName()).isEqualTo("테스트 동아리");
+        Assertions.assertThat(result.getCategory()).isEqualTo(ClubCategory.SPORTS);
+    }
+
+    @Test
+    @DisplayName("전체 동아리 조회 성공")
+    void getAllClubs_Success() {
+        // when
+        List<ClubListResponse> result = clubService.getAllClubs();
+
+        // then
+        assertThat(result)
+                .hasSize(8)
+                .isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("동아리 생성 실패 - 중복된 이름")
+    void createClub_DuplicateName_ThrowsException() {
+        Club existingClub = Club.builder()
+                .name("테스트 동아리")
+                .description("기존 설명")
+                .category(ClubCategory.SPORTS)
+                .build();
+        clubRepo.save(existingClub);
+
+        ClubCreateRequest request = new ClubCreateRequest("테스트 동아리", "새로운 설명", ClubCategory.SPORTS);
+
+        assertThrows(CustomException.class, () -> clubService.createClub(request));
+    }
+
+    @Test
+    @DisplayName("전체 동아리 조회 실패 - 동아리가 없음")
+    void getAllClubs_NoClubs_ReturnsEmptyList() {
+        // given
+        clubRepo.deleteAll();
+
+        // when
+        List<ClubListResponse> clubs = clubService.getAllClubs();
+
+        // then
+        assertTrue(clubs.isEmpty());
     }
 }
