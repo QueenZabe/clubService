@@ -1,10 +1,14 @@
 package com.example.clubservice.service;
 
+import com.example.clubservice.dto.request.ClubCreateRequest;
+import com.example.clubservice.dto.request.ClubUpdateRequest;
+import com.example.clubservice.dto.response.ClubResponse;
 import com.example.clubservice.entity.Club;
 import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
 import com.example.clubservice.exception.CustomException;
 import com.example.clubservice.dto.response.ClubListResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,16 +57,39 @@ class ClubServiceTest {
         });
     }
 
-    @DisplayName("해당 카테고리에 동아리가 없으면 NOT_FOUND 예외가 발생한다")
+    @DisplayName("존재하는 동아리 ID로 업데이트하면 정보가 변경된다")
     @Test
-    void findAllByCategory_NoClubs_ThrowsException() {
+    void updateClub_Success() {
         // given
-        clubRepo.deleteAll(); // 모든 동아리 삭제
-        ClubCategory category = ClubCategory.IT;
+        Club club = clubRepo.findAll().get(0);
+        Long clubId = club.getId();
+
+        ClubUpdateRequest updateRequest = new ClubUpdateRequest(
+                "업데이트 동아리", "설명 변경", ClubCategory.SPORTS
+        );
+
+        // when
+        clubService.updateClub(clubId, updateRequest);
+        Club updated = clubRepo.findById(clubId).orElseThrow();
+
+        // then
+        assertThat(updated.getName()).isEqualTo("업데이트 동아리");
+        assertThat(updated.getDescription()).isEqualTo("설명 변경");
+        assertThat(updated.getCategory()).isEqualTo(ClubCategory.SPORTS);
+    }
+
+    @DisplayName("존재하지 않는 ID로 업데이트하면 NOT_FOUND 예외 발생")
+    @Test
+    void updateClub_NotExist_ThrowsException() {
+        // given
+        ClubUpdateRequest updateRequest = new ClubUpdateRequest(
+                "업데이트 동아리", "설명 변경", ClubCategory.SPORTS
+        );
+        Long nonExistentId = 99999L;
 
         // when & then
         assertThrows(CustomException.class, () -> {
-            clubService.findAllByCategory(category);
+            clubService.updateClub(nonExistentId, updateRequest);
         });
     }
 
@@ -113,6 +140,90 @@ class ClubServiceTest {
         // when & then
         assertThrows(CustomException.class, () -> {
             clubService.deleteClub(nonExistentId);
+        });
+    }
+
+    @Test
+    @DisplayName("동아리 생성 성공")
+    void createClub_Success() {
+        // given
+        ClubCreateRequest request = new ClubCreateRequest("테스트 동아리", "테스트 설명", ClubCategory.SPORTS);
+
+        // when
+        clubService.createClub(request);
+        Club result = clubRepo.findByName(request.getName());
+
+        // then
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getName()).isEqualTo("테스트 동아리");
+        Assertions.assertThat(result.getCategory()).isEqualTo(ClubCategory.SPORTS);
+    }
+
+    @Test
+    @DisplayName("전체 동아리 조회 성공")
+    void getAllClubs_Success() {
+        // when
+        List<ClubListResponse> result = clubService.getAllClubs();
+
+        // then
+        assertThat(result)
+                .hasSize(8)
+                .isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("동아리 생성 실패 - 중복된 이름")
+    void createClub_DuplicateName_ThrowsException() {
+        Club existingClub = Club.builder()
+                .name("테스트 동아리")
+                .description("기존 설명")
+                .category(ClubCategory.SPORTS)
+                .build();
+        clubRepo.save(existingClub);
+
+        ClubCreateRequest request = new ClubCreateRequest("테스트 동아리", "새로운 설명", ClubCategory.SPORTS);
+
+        assertThrows(CustomException.class, () -> clubService.createClub(request));
+    }
+
+    @Test
+    @DisplayName("전체 동아리 조회 실패 - 동아리가 없음")
+    void getAllClubs_NoClubs_ReturnsEmptyList() {
+        // given
+        clubRepo.deleteAll();
+
+        // when
+        List<ClubListResponse> clubs = clubService.getAllClubs();
+
+        // then
+        assertTrue(clubs.isEmpty());
+    }
+
+    @DisplayName("존재하는 ID로 동아리 단일 조회에 성공한다")
+    @Test
+    void getClubById_Success() {
+        // given
+        Club firstClub = clubRepo.findAll().getFirst(); // 첫 번째 동아리 선택
+        Long id = firstClub.getId();
+
+        // when
+        ClubResponse result = clubService.getClubById(id);
+
+        // then
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isEqualTo(id);
+        Assertions.assertThat(result.getName()).isEqualTo(firstClub.getName());
+    }
+
+    @DisplayName("존재하지 않는 ID로 조회하면 NOT_FOUND 예외 발생")
+    @Test
+    void getClubById_NotExist_ThrowsException() {
+        // given
+        Long nonExistentId = 99999L;
+
+        // when & then
+        assertThrows(CustomException.class, () -> {
+            clubService.getClubById(nonExistentId);
         });
     }
 }

@@ -1,12 +1,16 @@
 package com.example.clubservice.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.clubservice.dto.request.ClubCreateRequest;
+import com.example.clubservice.dto.request.ClubUpdateRequest;
 import com.example.clubservice.entity.Club;
+import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.clubservice.service.ClubService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,9 +24,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class ClubControllerTest {
+    @Autowired
+    private ClubService clubService;
 
     @Autowired
     protected MockMvc mockMvc;
@@ -32,6 +40,9 @@ class ClubControllerTest {
 
     @Autowired
     private ClubRepository clubRepo;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     public void mockMvcSetUp() {
@@ -43,11 +54,11 @@ class ClubControllerTest {
         clubRepo.deleteAll();
     }
 
-    @DisplayName("GET, /club/IT 요청 시 200 OK와 IT 카테고리 동아리 목록이 반환된다")
+    @DisplayName("GET, /club/category/IT 요청 시 200 OK와 IT 카테고리 동아리 목록이 반환된다")
     @Test
     public void getClubsByCategory_success() throws Exception {
         // given
-        final String url = "/club/IT";
+        final String url = "/club/category/IT";
 
         // when
         final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
@@ -100,6 +111,130 @@ class ClubControllerTest {
 
         // when
         final ResultActions result = mockMvc.perform(delete(url));
+
+        // then
+        result
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    @DisplayName("POST /clubs - 동아리 생성 성공")
+    void createClub_Success() {
+        // given
+        ClubCreateRequest request = new ClubCreateRequest("테스트 동아리", "테스트 설명", ClubCategory.SPORTS);
+
+        // when
+        clubService.createClub(request);
+        Club result = clubRepo.findByName(request.getName());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("테스트 동아리");
+        assertThat(result.getCategory()).isEqualTo(ClubCategory.SPORTS);
+    }
+
+    @Test
+    @DisplayName("GET /club/list - 전체 동아리 조회 성공")
+    public void findAll_success() throws Exception {
+        // given
+        final String url = "/club/list";
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.data").isArray());
+    }
+
+    @DisplayName("동아리 단일 조회 성공 시 200 OK와 데이터 반환")
+    @Test
+    void getClub_Success() throws Exception {
+        // given
+        Club club = clubRepo.findAll().get(0);
+        Long clubId = club.getId();
+        final String url = "/club/" + clubId;
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.data.id").value(clubId))
+                .andExpect(jsonPath("$.data.name").value(club.getName()))
+                .andExpect(jsonPath("$.data.category").value(club.getCategory().name()));
+    }
+
+    @DisplayName("GET, /club/{id} 요청 시 존재하지 않는 동아리면 404 Not Found 반환")
+    @Test
+    void getClub_NotFound() throws Exception {
+        // given
+        Long nonExistentId = 999L;
+        final String url = "/club/" + nonExistentId;
+
+        // when
+        final ResultActions result = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @DisplayName("PUT, /club/{id} 요청 시 200 OK와 성공 메시지가 반환된다")
+    @Test
+    void updateClub_Success() throws Exception {
+        // given
+        Club club = clubRepo.findAll().get(0);
+        Long clubId = club.getId();
+
+        ClubUpdateRequest request = new ClubUpdateRequest(
+                "업데이트 동아리", "설명 변경", ClubCategory.SPORTS
+        );
+
+        String json = objectMapper.writeValueAsString(request);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                put("/club/" + clubId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        );
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("성공적으로 업데이트 되었습니다."));
+    }
+
+    @DisplayName("PUT, /club/{id} 요청 시 존재하지 않는 ID면 404 Not Found 반환")
+    @Test
+    void updateClub_NotFound() throws Exception {
+        // given
+        ClubUpdateRequest request = new ClubUpdateRequest(
+                "업데이트 동아리", "설명 변경", ClubCategory.SPORTS
+        );
+        String json = objectMapper.writeValueAsString(request);
+        Long nonExistentId = 99999L;
+
+        // when
+        ResultActions result = mockMvc.perform(
+                put("/club/" + nonExistentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+        );
 
         // then
         result
