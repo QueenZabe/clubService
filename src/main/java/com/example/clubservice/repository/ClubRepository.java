@@ -9,6 +9,8 @@ import java.util.List;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
+
+    Club findByName(String name);
     boolean existsByName(String name);
     List<Club> findAllByOrderByCreatedAtDesc();
     List<Club> findAllByCategory(ClubCategory category);

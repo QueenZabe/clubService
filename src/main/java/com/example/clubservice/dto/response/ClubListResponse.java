@@ -11,12 +11,14 @@ public class ClubListResponse {
     private Long id;
     private String name;
     private ClubCategory category;
+    private String description;
 
     public static ClubListResponse from(Club club) {
         return new ClubListResponse(
                 club.getId(),
                 club.getName(),
-                club.getCategory()
+                club.getCategory(),
+                club.getDescription()
         );
     }
 }

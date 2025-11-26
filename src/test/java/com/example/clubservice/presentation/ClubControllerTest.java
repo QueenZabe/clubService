@@ -5,8 +5,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.clubservice.dto.request.ClubCreateRequest;
+import com.example.clubservice.dto.response.ClubListResponse;
 import com.example.clubservice.entity.Club;
+import com.example.clubservice.enums.ClubCategory;
 import com.example.clubservice.repository.ClubRepository;
+import com.example.clubservice.service.ClubService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,9 +24,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class ClubControllerTest {
+    @Autowired
+    private ClubService clubService;
 
     @Autowired
     protected MockMvc mockMvc;
@@ -107,4 +115,36 @@ class ClubControllerTest {
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").exists());
     }
+
+    @Test
+    @DisplayName("POST /clubs - 동아리 생성 성공")
+    void createClub_Success() {
+        // given
+        ClubCreateRequest request = new ClubCreateRequest("테스트 동아리", "테스트 설명", ClubCategory.SPORTS);
+
+        // when
+        clubService.createClub(request);
+        Club result = clubRepo.findByName(request.getName());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("테스트 동아리");
+        assertThat(result.getCategory()).isEqualTo(ClubCategory.SPORTS);
+    }
+
+    @Test
+    @DisplayName("GET /clubs - 전체 동아리 조회 성공")
+    public void getClubsByCategory_Success() throws Exception {
+        // given
+        final String url = "/clubs/IT";
+
+        // when
+        ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data").isArray());
+    }
+
 }
