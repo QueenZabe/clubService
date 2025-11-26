@@ -24,6 +24,7 @@ public enum ErrorCode implements CustomErrorCode {
     TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "토큰의 유저 정보가 일치하지 않습니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 
+
     private final HttpStatus status;
     private final String message;
 }
